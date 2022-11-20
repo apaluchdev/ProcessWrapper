@@ -85,14 +85,14 @@ static class Program
 
     private static void CheckShutdown()
     {
-        if ((DateTime.Now - LastCheckTime) > TimeSpan.FromSeconds(1000))
+        if ((DateTime.Now - LastPlayerZeroTime) > TimeSpan.FromSeconds(1000))
         {
             Stopping = true;
             WriteToStandardInput("stop");
         }
         else
         {
-            Console.WriteLine(DateTime.Now - LastCheckTime);
+            Console.WriteLine(DateTime.Now - LastPlayerZeroTime);
         }
     }
 
