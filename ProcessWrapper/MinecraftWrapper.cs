@@ -8,9 +8,9 @@ namespace ProcessWrapper
 {
     public class MinecraftWrapper
     {
-        public static readonly HttpClient Client = new HttpClient();
+        public readonly HttpClient Client = new HttpClient();
 
-        ConsoleWrapper ServerConsole;
+        public ConsoleWrapper ServerConsole;
 
         private static readonly string StopURL = "https://prod-22.canadacentral.logic.azure.com/workflows/33bc0461d58d4d8691ea87ada674326a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Aswssl0hSrVph16TcrPoIN87GC9Y5YqJ4xazJW0EeY8";
 
@@ -53,23 +53,9 @@ namespace ProcessWrapper
             {
                 Thread.Sleep(30000);
 
-                if (PlayerCount <= 0 && ServerStopTime < DateTime.Now)
-                {
-                    SendStopCommand();
-                }
-                else if (PlayerCount <= 0 && (ServerStopTime - DateTime.Now) < TimeSpan.FromMinutes(30))
-                {
-                    Console.WriteLine("Server shutting down in 30 minutes due to player count.");
-                }
-                else if (PlayerCount > 0)
-                {
-                    ServerStopTime = DateTime.Now.AddHours(1);
-                }
-                else
-                {
-                    Console.WriteLine("Server is scheduled to shutdown at " + ServerStopTime.ToString());
-                }
+                EmptyServerCheck();
 
+                // Server offline -> Host Shutdown check
                 if (ServerConsole.HasExited)
                 {
                     var result = await ShutdownServerHost();
@@ -106,6 +92,30 @@ namespace ProcessWrapper
 
             return response.IsSuccessStatusCode;
         }
+
+        #region StateChecks
+
+        private void EmptyServerCheck()
+        {
+            // Shutdown if no players and shutdown time has been reached
+            if (PlayerCount <= 0 && ServerStopTime < DateTime.Now)
+            {
+                SendStopCommand();
+            }
+            // If no players exist, and shutdown is imminent, output a warning every 5 minutes.
+            else if (PlayerCount <= 0 && (ServerStopTime - DateTime.Now) < TimeSpan.FromMinutes(30))
+            {
+                if (DateTime.Now.Minute % 5 == 0)
+                    Console.WriteLine("Server shutting down in 30 minutes due to player count.");
+            }
+            // Extend shutdown time to one hour in the future if any players are online
+            else if (PlayerCount > 0)
+            {
+                ServerStopTime = DateTime.Now.AddHours(1);
+            }
+        }
+
+        #endregion
 
         #region ProcessOutputHelpers
 

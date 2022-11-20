@@ -17,10 +17,10 @@ static class Program
         var arguments = string.Empty;
         var fileName = string.Empty;
 
-        if (!ValidateArgs(args))
-        {
-            return -1;
-        }
+        //if (!ValidateArgs(args))
+        //{
+        //    return -1;
+        //}
         if (args.Length == 0)
         {
             fileName = "java";
