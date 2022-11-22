@@ -53,8 +53,10 @@ namespace ProcessWrapper
                 // Send shutdown request to ServerHost
                 var result = await ShutdownServerHost();
             }
-
-            EmptyServerCheck();
+            else
+            {
+                EmptyServerCheck();
+            }
         }
 
         // Listener for the console wrapper output
