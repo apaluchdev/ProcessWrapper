@@ -12,6 +12,14 @@ static class Program
 
     public static ConsoleWrapper ConsoleWrapper;
 
+    /// <summary>
+    /// Linux deployment
+    /// https://stackoverflow.com/questions/46843863/how-to-run-a-net-core-console-application-on-linux
+    /// dotnet publish -c release -r ubuntu.16.04-x64 --self-contained
+    /// chmod+x
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
     static int Main(string[] args)
     {
         var arguments = string.Empty;
