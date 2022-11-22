@@ -42,8 +42,6 @@ namespace ProcessWrapper
 
         private async void ShutdownCheckTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            EmptyServerCheck();
-
             // If the server is offline, issue a shutdown request to the host
             if (ServerConsole.HasExited)
             {
@@ -55,6 +53,8 @@ namespace ProcessWrapper
                 // Send shutdown request to ServerHost
                 var result = await ShutdownServerHost();
             }
+
+            EmptyServerCheck();
         }
 
         // Listener for the console wrapper output
